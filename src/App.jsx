@@ -6,6 +6,7 @@ import {
   Route,
   Link,
   useLocation,
+  useParams,
 } from "react-router-dom";
 
 export default function App() {
@@ -37,6 +38,9 @@ function Main() {
           <li>
             <Link to="/issues?page=2">Issues page 2</Link>
           </li>
+          <li>
+            <Link to="/issue/2">Issues number 2</Link>
+          </li>
         </ul>
       </div>
       <Switch>
@@ -45,6 +49,9 @@ function Main() {
         </Route>
         <Route path="/issues">
           <Issues page={query.get("page")} />
+        </Route>
+        <Route path="/issue/:number">
+          <Issue />
         </Route>
         <Route path="*">
           <NoMatch />
@@ -73,6 +80,16 @@ function Issues({ page }) {
 Issues.propTypes = {
   page: PropTypes.string,
 };
+
+function Issue() {
+  let { number } = useParams();
+  return (
+    <div>
+      <h2>Issue {number}</h2>
+      <div>issue page!</div>
+    </div>
+  );
+}
 
 function NoMatch() {
   let location = useLocation();
