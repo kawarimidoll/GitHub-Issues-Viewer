@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import {
   BrowserRouter as Router,
   Switch,
@@ -10,37 +11,46 @@ import {
 export default function App() {
   return (
     <Router>
+      <Main />
+    </Router>
+  );
+}
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
+
+function Main() {
+  let query = useQuery();
+
+  return (
+    <div>
       <div>
+        <h2>App</h2>
         <ul>
           <li>
             <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to="/about">About</Link>
+            <Link to="/issues">Issues</Link>
           </li>
           <li>
-            <Link to="/dashboard">Dashboard</Link>
+            <Link to="/issues?page=2">Issues page 2</Link>
           </li>
         </ul>
-
-        <hr />
-
-        <Switch>
-          <Route exact path="/">
-            <Home />
-          </Route>
-          <Route path="/about">
-            <About />
-          </Route>
-          <Route path="/dashboard">
-            <Dashboard />
-          </Route>
-          <Route path="*">
-            <NoMatch />
-          </Route>
-        </Switch>
       </div>
-    </Router>
+      <Switch>
+        <Route exact path="/">
+          <Home />
+        </Route>
+        <Route path="/issues">
+          <Issues page={query.get("page")} />
+        </Route>
+        <Route path="*">
+          <NoMatch />
+        </Route>
+      </Switch>
+    </div>
   );
 }
 
@@ -52,21 +62,17 @@ function Home() {
   );
 }
 
-function About() {
+function Issues({ page }) {
   return (
     <div>
-      <h2>About</h2>
+      <h2>Issues</h2>
+      {page ? <div> {page} page! </div> : <div> no page! </div>}
     </div>
   );
 }
-
-function Dashboard() {
-  return (
-    <div>
-      <h2>Dashboard</h2>
-    </div>
-  );
-}
+Issues.propTypes = {
+  page: PropTypes.string,
+};
 
 function NoMatch() {
   let location = useLocation();
