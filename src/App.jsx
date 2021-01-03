@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import ReactMarkdown from "react-markdown";
+import gfm from "remark-gfm";
 import {
   BrowserRouter as Router,
   Switch,
@@ -119,10 +121,12 @@ function Issue() {
             {issue.number}: {issue.title}
           </h2>
           <div>
-            <a href={issue.html_url} target="_blank" rel="noopener noreferrer">view in GitHub</a>
+            <a href={issue.html_url} target="_blank" rel="noopener noreferrer">
+              view in GitHub
+            </a>
           </div>
           <hr />
-          <div>{issue.body}</div>
+          <ReactMarkdown plugins={[gfm]}>{issue.body}</ReactMarkdown>
         </div>
       )}
     </div>
