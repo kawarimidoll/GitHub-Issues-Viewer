@@ -59,36 +59,84 @@ function Home() {
 }
 
 function Issues({ page = "1" }) {
+  const pageNum = page ? Number(page) : 1;
   const [loading, setLoading] = useState(true);
   const [issues, setIssues] = useState([]);
+  const [issuesCount, setIssuesCount] = useState(0);
+  const perPage = 10;
   useEffect(() => {
     fetch(
-      ` https://api.github.com/repos/facebook/react/issues?page=${page}&per_page=10`
+      `https://api.github.com/repos/facebook/react/issues?page=${pageNum}&per_page=${perPage}`
     )
       .then((response) => response.json())
       .then((jsonResponse) => {
         console.log(jsonResponse);
         setIssues(jsonResponse);
-        setLoading(false);
+      })
+      .then(() => {
+        fetch(`https://api.github.com/repos/facebook/react`)
+          .then((response) => response.json())
+          .then((jsonResponse) => {
+            console.log(jsonResponse);
+            setIssuesCount(jsonResponse.open_issues_count);
+          })
+          .then(() => {
+            setLoading(false);
+          });
       });
   }, []);
+  const lastPageNum = () => Math.ceil(issuesCount / perPage);
   return (
     <div>
       <h2>Issues</h2>
-      {page ? <div> {page} page! </div> : <div> no page! </div>}
       <div>
         {loading ? (
           <div>loading...</div>
         ) : (
-          <ul>
-            {issues.map((issue) => (
-              <li key={issue.id}>
-                <Link to={`/issue/${issue.number}`}>
-                  {issue.number}: {issue.title}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <div>
+            <div>{issuesCount} Issues!</div>
+            <ul>
+              {issues.map((issue) => (
+                <li key={issue.id}>
+                  <Link to={`/issue/${issue.number}`}>
+                    {issue.number}: {issue.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <div>
+              <ul>
+                <li>
+                  {pageNum < 2 ? (
+                    <span>First</span>
+                  ) : (
+                    <Link to="/issues">First</Link>
+                  )}
+                </li>
+                <li>
+                  {pageNum < 2 ? (
+                    <span>Prev</span>
+                  ) : (
+                    <Link to={`/issues?page=${pageNum - 1}`}>Prev</Link>
+                  )}
+                </li>
+                <li>
+                  {pageNum < lastPageNum() ? (
+                    <Link to={`/issues?page=${pageNum + 1}`}>Next</Link>
+                  ) : (
+                    <span>Next</span>
+                  )}
+                </li>
+                <li>
+                  {pageNum < lastPageNum() ? (
+                    <Link to={`/issues?page=${lastPageNum()}`}>Last</Link>
+                  ) : (
+                    <span>Last</span>
+                  )}
+                </li>
+              </ul>
+            </div>
+          </div>
         )}
       </div>
     </div>
