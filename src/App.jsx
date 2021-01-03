@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   BrowserRouter as Router,
@@ -26,7 +26,9 @@ function Main() {
 
   return (
     <div>
-      <Link to="/issues"><h2>Github Issues Viewer</h2></Link>
+      <Link to="/issues">
+        <h2>Github Issues Viewer</h2>
+      </Link>
       <Switch>
         <Route exact path="/">
           <Home />
@@ -54,34 +56,38 @@ function Home() {
   );
 }
 
-const issues = [
-  { id: 1, number: 1, title: "issue title 1", body: "issue body 1" },
-  { id: 2, number: 2, title: "issue title 2", body: "issue body 2" },
-  { id: 3, number: 3, title: "issue title 3", body: "issue body 3" },
-  { id: 4, number: 4, title: "issue title 4", body: "issue body 4" },
-  { id: 5, number: 5, title: "issue title 5", body: "issue body 5" },
-  { id: 6, number: 6, title: "issue title 6", body: "issue body 6" },
-  { id: 7, number: 7, title: "issue title 7", body: "issue body 7" },
-  { id: 8, number: 8, title: "issue title 8", body: "issue body 8" },
-  { id: 9, number: 9, title: "issue title 9", body: "issue body 9" },
-  { id: 10, number: 10, title: "issue title 10", body: "issue body 10" },
-];
-
-function Issues({ page }) {
+function Issues({ page = "1" }) {
+  const [loading, setLoading] = useState(true);
+  const [issues, setIssues] = useState([]);
+  useEffect(() => {
+    fetch(
+      ` https://api.github.com/repos/facebook/react/issues?page=${page}&per_page=10`
+    )
+      .then((response) => response.json())
+      .then((jsonResponse) => {
+        console.log(jsonResponse);
+        setIssues(jsonResponse);
+        setLoading(false);
+      });
+  }, []);
   return (
     <div>
       <h2>Issues</h2>
       {page ? <div> {page} page! </div> : <div> no page! </div>}
       <div>
-        <ul>
-        {issues.map((issue) => (
-          <li key={issue.id}>
-            <Link to={`/issue/${issue.number}`}>
-              {issue.number}: {issue.title}
-            </Link>
-          </li>
-        ))}
-        </ul>
+        {loading ? (
+          <div>loading...</div>
+        ) : (
+          <ul>
+            {issues.map((issue) => (
+              <li key={issue.id}>
+                <Link to={`/issue/${issue.number}`}>
+                  {issue.number}: {issue.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );
@@ -92,13 +98,33 @@ Issues.propTypes = {
 
 function Issue() {
   let { number } = useParams();
-  const issue = issues[Number(number) - 1];
+  const [loading, setLoading] = useState(true);
+  const [issue, setIssue] = useState([]);
+  useEffect(() => {
+    fetch(` https://api.github.com/repos/facebook/react/issues/${number}`)
+      .then((response) => response.json())
+      .then((jsonResponse) => {
+        console.log(jsonResponse);
+        setIssue(jsonResponse);
+        setLoading(false);
+      });
+  }, []);
   return (
     <div>
-      <h2>
-        {issue.number}: {issue.title}
-      </h2>
-      <div>{issue.body}</div>
+      {loading ? (
+        <div>loading...</div>
+      ) : (
+        <div>
+          <h2>
+            {issue.number}: {issue.title}
+          </h2>
+          <div>
+            <a href={issue.html_url} target="_blank" rel="noopener noreferrer">view in GitHub</a>
+          </div>
+          <hr />
+          <div>{issue.body}</div>
+        </div>
+      )}
     </div>
   );
 }
