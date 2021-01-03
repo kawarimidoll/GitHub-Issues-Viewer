@@ -121,9 +121,7 @@ function Issue() {
             {issue.number}: {issue.title}
           </h2>
           <div>
-            <a href={issue.html_url} target="_blank" rel="noopener noreferrer">
-              view in GitHub
-            </a>
+            <ExLink to={issue.html_url}>view in GitHub</ExLink>
           </div>
           <hr />
           <ReactMarkdown plugins={[gfm]}>{issue.body}</ReactMarkdown>
@@ -132,6 +130,22 @@ function Issue() {
     </div>
   );
 }
+
+function ExLink(props) {
+  console.log(props);
+  return (
+    <a href={props.to} target="_blank" rel="noopener noreferrer">
+      {props.children}
+    </a>
+  );
+}
+ExLink.propTypes = {
+  to: PropTypes.string,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]).isRequired,
+};
 
 function NoMatch() {
   let location = useLocation();
