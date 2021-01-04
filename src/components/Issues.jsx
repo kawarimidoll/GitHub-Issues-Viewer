@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+import Link from "./util/EzLink";
 import Pager from "./util/Pager";
 
 export default function Issues({ page }) {
@@ -9,6 +9,7 @@ export default function Issues({ page }) {
   const [issues, setIssues] = useState([]);
   const [issuesCount, setIssuesCount] = useState(0);
   const perPage = 10;
+
   useEffect(() => {
     setLoading(true);
     fetch(
@@ -38,13 +39,13 @@ export default function Issues({ page }) {
   return (
     <div>
       <h2>Issues</h2>
-      <div>page {pageNum}</div>
       <div>
         {loading ? (
           <div>loading...</div>
+        ) : !issues[0] ? (
+          <div>issues not found</div>
         ) : (
           <div>
-            <div>{issuesCount} Issues!</div>
             <ul>
               {issues.map((issue) => (
                 <li key={issue.id}>

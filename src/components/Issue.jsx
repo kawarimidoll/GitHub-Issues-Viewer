@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import gfm from "remark-gfm";
-import ExLink from "./util/ExLink";
+import Link from "./util/EzLink";
 import { useParams } from "react-router-dom";
 
 export default function Issue() {
@@ -27,7 +27,7 @@ export default function Issue() {
             {issue.number}: {issue.title}
           </h2>
           <div>
-            <ExLink to={issue.html_url}>view in GitHub</ExLink>
+            <Link to={issue.html_url}>view in GitHub</Link>
           </div>
           <hr />
           <ReactMarkdown plugins={[gfm]}>{issue.body}</ReactMarkdown>
