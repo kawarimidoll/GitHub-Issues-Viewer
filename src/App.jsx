@@ -35,11 +35,11 @@ function Main() {
         <Route exact path="/">
           <Home />
         </Route>
+        <Route path="/issues/:number">
+          <Issue />
+        </Route>
         <Route path="/issues">
           <Issues page={query.get("page")} />
-        </Route>
-        <Route path="/issue/:number">
-          <Issue />
         </Route>
         <Route path="*">
           <NoMatch />
@@ -58,7 +58,7 @@ function Home() {
   );
 }
 
-function Issues({ page = "1" }) {
+function Issues({ page }) {
   const pageNum = page ? Number(page) : 1;
   const [loading, setLoading] = useState(true);
   const [issues, setIssues] = useState([]);
@@ -89,6 +89,7 @@ function Issues({ page = "1" }) {
   return (
     <div>
       <h2>Issues</h2>
+      <div>page {pageNum}</div>
       <div>
         {loading ? (
           <div>loading...</div>
@@ -98,7 +99,7 @@ function Issues({ page = "1" }) {
             <ul>
               {issues.map((issue) => (
                 <li key={issue.id}>
-                  <Link to={`/issue/${issue.number}`}>
+                  <Link to={`/issues/${issue.number}`}>
                     {issue.number}: {issue.title}
                   </Link>
                 </li>
