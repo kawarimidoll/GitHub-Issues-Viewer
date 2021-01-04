@@ -65,6 +65,7 @@ function Issues({ page }) {
   const [issuesCount, setIssuesCount] = useState(0);
   const perPage = 10;
   useEffect(() => {
+    setLoading(true);
     fetch(
       `https://api.github.com/repos/facebook/react/issues?page=${pageNum}&per_page=${perPage}`
     )
@@ -84,7 +85,8 @@ function Issues({ page }) {
             setLoading(false);
           });
       });
-  }, []);
+  }, [page]);
+
   const lastPageNum = () => Math.ceil(issuesCount / perPage);
   return (
     <div>
