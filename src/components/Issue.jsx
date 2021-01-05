@@ -23,7 +23,7 @@ export default function Issue() {
   return (
     <div>
       {loading ? (
-        <div>loading...</div>
+        <div>loading issue #{number}...</div>
       ) : !issue.id ? (
         <div>issue not found</div>
       ) : (

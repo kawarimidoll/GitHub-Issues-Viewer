@@ -41,7 +41,7 @@ export default function Issues({ page }) {
       <h2>Issues</h2>
       <div>
         {loading ? (
-          <div>loading...</div>
+          <div>loading issues list...</div>
         ) : !issues[0] ? (
           <div>issues not found</div>
         ) : (

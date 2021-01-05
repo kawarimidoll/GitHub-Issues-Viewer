@@ -14,7 +14,7 @@ export default function App() {
   return (
     <div>
       <Link to="/issues">
-        <h2>GitHub Issues Viewer</h2>
+        <h1>GitHub Issues Viewer</h1>
       </Link>
       <Switch>
         <Route exact path="/">
